@@ -21,8 +21,14 @@ services:
         environment:
             POSTGRES_DB: ${POSTGRES_DB:-app}
             POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-ChangeMe}
+            PGUSER: ${POSTGRES_USER:-app}
             POSTGRES_USER: ${POSTGRES_USER:-app}
         volumes:
             - ./docker/db-data:/var/lib/postgresql/data:rw
         ports:
             - "5432"
+        healthcheck:
+            test: ["CMD", "pg_isready"]
+            timeout: 5s
+            retries: 5
+            start_period: 60s
