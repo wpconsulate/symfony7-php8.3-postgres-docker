@@ -1,0 +1,28 @@
+version: '3'
+services:
+    app:
+        build:
+            context: .
+            dockerfile: ./Dockerfile
+            args:
+                BUILD_ENV: dev
+        volumes:
+            - ./backend:/var/www/html
+            - ./docker/configs/xdebug3.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+        ports:
+            - "8080:80"
+        environment:
+            - PHP_IDE_CONFIG=serverName=localhost
+            - APP_ENV=debug
+        container_name: app
+
+    database:
+        image: postgres:${POSTGRES_VERSION:-16}-alpine
+        environment:
+            POSTGRES_DB: ${POSTGRES_DB:-app}
+            POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-ChangeMe}
+            POSTGRES_USER: ${POSTGRES_USER:-app}
+        volumes:
+            - ./docker/db-data:/var/lib/postgresql/data:rw
+        ports:
+            - "5432"

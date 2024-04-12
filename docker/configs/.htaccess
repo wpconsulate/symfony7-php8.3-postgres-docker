@@ -1,0 +1,30 @@
+RewriteEngine On
+
+ # Added by Anthony. Rewrite 1-part paths for backward competibility reason
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^([a-z0-9\-_]+)\.?([a-z0-9]+)?$ /index.php?a=$1&ext=$2 [QSA,NC,L]
+
+RewriteCond %{REQUEST_FILENAME} !/html/index\.php$
+RewriteCond %{REQUEST_FILENAME} ^.+\.(php)$
+RewriteRule .? - [F,NS,L]
+
+# please activate HTTPS as soon as the certificate is installed
+#Header always set Strict-Transport-Security "max-age=60"
+#RewriteCond %{HTTPS} !=on
+#RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# Remove trailing slashes
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)/$ /$1 [R=301,L]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^([a-z0-9\-_]+)/([a-z0-9\-_]+)/([a-z0-9\-_]+)\.?([a-z0-9]+)?$ /index.php?a=$1&sub=$2&sub2=$3&ext=$4 [QSA,NC,L] # Rewrite 3-part paths /action/subaction/subsubaction(.extension)
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^([a-z0-9\-_]+)/([a-z0-9\-_]+)\.?([a-z0-9]+)?$ /index.php?a=$1&sub=$2&ext=$3 [QSA,NC,L] # Rewrite 2-part paths /action/
+#php_value open_basedir /var/www/vhosts/admin.lanecrawford.com
+
+php_flag session.cookie_secure Off
